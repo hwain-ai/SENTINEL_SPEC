@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentinel.invalid/schemas/result.schema.json",
+  "title": "SENTINEL result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "specVersion",
+    "crap",
+    "mutation"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "sentinel-result-v1"
+    },
+    "specVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "crap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maxNumerator",
+        "maxDenominator",
+        "pass",
+        "unknownCount"
+      ],
+      "properties": {
+        "maxNumerator": {
+          "$ref": "#/$defs/nonnegativeDecimalString"
+        },
+        "maxDenominator": {
+          "$ref": "#/$defs/positiveDecimalString"
+        },
+        "pass": {
+          "type": "boolean"
+        },
+        "unknownCount": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "mutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inScope",
+        "killed",
+        "survived",
+        "uncovered",
+        "timedOut",
+        "compileError",
+        "runtimeError",
+        "pending",
+        "ignored",
+        "toolError",
+        "unauthorizedExclusion",
+        "pass"
+      ],
+      "properties": {
+        "inScope": {
+          "$ref": "#/$defs/count"
+        },
+        "killed": {
+          "$ref": "#/$defs/count"
+        },
+        "survived": {
+          "$ref": "#/$defs/count"
+        },
+        "uncovered": {
+          "$ref": "#/$defs/count"
+        },
+        "timedOut": {
+          "$ref": "#/$defs/count"
+        },
+        "compileError": {
+          "$ref": "#/$defs/count"
+        },
+        "runtimeError": {
+          "$ref": "#/$defs/count"
+        },
+        "pending": {
+          "$ref": "#/$defs/count"
+        },
+        "ignored": {
+          "$ref": "#/$defs/count"
+        },
+        "toolError": {
+          "$ref": "#/$defs/count"
+        },
+        "unauthorizedExclusion": {
+          "$ref": "#/$defs/count"
+        },
+        "pass": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "pass": {
+                "const": true
+              }
+            },
+            "required": [
+              "pass"
+            ]
+          },
+          "then": {
+            "properties": {
+              "inScope": {
+                "minimum": 1
+              },
+              "survived": {
+                "const": 0
+              },
+              "uncovered": {
+                "const": 0
+              },
+              "timedOut": {
+                "const": 0
+              },
+              "compileError": {
+                "const": 0
+              },
+              "runtimeError": {
+                "const": 0
+              },
+              "pending": {
+                "const": 0
+              },
+              "ignored": {
+                "const": 0
+              },
+              "toolError": {
+                "const": 0
+              },
+              "unauthorizedExclusion": {
+                "const": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "nonnegativeDecimalString": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "maxLength": 96
+    },
+    "positiveDecimalString": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$",
+      "maxLength": 48
+    }
+  }
+}
