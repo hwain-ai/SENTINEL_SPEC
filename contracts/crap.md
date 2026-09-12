@@ -1,11 +1,13 @@
 ---
 type: Executable Contract
 status: draft
-generated: { by: "process:codex", at: "2026-09-03T06:15:42Z" }
+generated: { by: "process:codex", at: "2026-09-03T09:45:52Z" }
 owner: "human:hwain"
 sources:
   - resource: ../golden/crap/formula-v1.json
     title: CRAP 수식과 표준 소수 golden vector
+  - resource: ../golden/crap/stable-sort-v1.json
+    title: CRAP 결과의 안정적인 정렬 golden vector
 ---
 
 # CRAP 수치 계약
@@ -16,11 +18,11 @@ sources:
 
 |이름|뜻|허용값|
 |---|---|---|
-|CC|Cyclomatic Complexity, 실행 경로의 복잡도|bool이 아닌 1 이상의 정수|
-|C|covered unit, 테스트가 실행한 측정 단위 수|bool이 아닌 0 이상의 정수|
-|T|total unit, 전체 측정 단위 수|bool이 아닌 1 이상의 정수이며 C 이상|
+|CC|Cyclomatic Complexity, 실행 경로의 복잡도|bool이 아닌 1 이상 9,007,199,254,740,991 이하의 정수|
+|C|covered unit, 테스트가 실행한 측정 단위 수|bool이 아닌 0 이상 9,007,199,254,740,991 이하의 정수|
+|T|total unit, 전체 측정 단위 수|bool이 아닌 1 이상 9,007,199,254,740,991 이하의 정수이며 C 이상|
 
-입력 하나라도 범위를 벗어나면 계산을 계속하지 않고 validation error를 반환합니다.
+입력 하나라도 범위를 벗어나면 계산을 계속하지 않고 validation error를 반환합니다. 이 상한은 JSON을 사용하는 다섯 언어가 같은 정수를 손실 없이 읽기 위한 공통 한계입니다.
 
 ## 계산 순서
 
@@ -39,8 +41,39 @@ sources:
 |---:|---:|
 |17/4|4.25|
 |1/3|0.333333333333|
-|246913578025/2000000000000|0.123456789012|
+|9876543121/80000000000|0.123456789012|
 |246913578027/2000000000000|0.123456789014|
 |1999999999999/2000000000000|1|
 
-언어별 구현은 binary float, epsilon, locale formatter를 계산이나 gate에 사용하면 안 됩니다. 언어별 동일성 검증 자료는 [formula-v1.json](../golden/crap/formula-v1.json)입니다.
+언어별 구현은 binary float, epsilon, locale formatter를 계산이나 gate에 사용하면 안 됩니다. 언어별 동일성 검증 자료는 [formula-v1.json](../golden/crap/formula-v1.json)입니다. 이 자료는 `2^53-1` 정상 입력, `2^53`과 `2^53+1` 오류, safe-integer 입력에서 생기는 큰 CRAP 분수와 80자리/48자리 표시용 분수를 함께 고정합니다.
+
+## Raw JSON 읽기 경계
+
+JSON 입력은 UTF-8 원본 byte에서 먼저 검증합니다. Object pair를 mapping으로 합치기 전에 같은
+key가 두 번 나오면 `jsonDuplicateKey`로 거부합니다. JSON number token은 runtime 숫자로 바꾸기
+전에 검사하며, 정수 token만 허용합니다. Fraction, exponent와 negative zero는
+`jsonIntegerLexemeInvalid`, 절댓값이 9,007,199,254,740,991을 넘으면
+`jsonIntegerOutOfRange`입니다. 각 nonnegative field의 음수와 0 허용 여부는 이 손실 없는 읽기 뒤
+field 계약으로 검사합니다.
+
+Golden의 `rawJsonInvalidCases[].rawInput`과 `rawDocument`는 실패해야 하는 JSON 원문을 string으로
+보존합니다. Consumer는 이 string을 다시 UTF-8 byte로 만든 뒤 위 검증을 적용합니다. 특히
+`2^53`과 `2^53+1`을 일반 JavaScript `JSON.parse`로 먼저 읽으면 두 값이 같아지므로, lossless
+scanner 또는 동등한 raw-token validator보다 `JSON.parse`를 먼저 호출하면 안 됩니다.
+
+## 결과 정렬 순서
+
+같은 프로젝트를 반복 검사했을 때 보고서 행 순서도 항상 같아야 합니다. 각 언어 도구는 다음 순서를 그대로 사용합니다.
+
+1. Coverage를 알 수 없는 callable을 먼저 놓습니다.
+2. Coverage를 아는 callable은 반올림하지 않은 CRAP 기약분수를 교차 곱셈해 큰 값부터 놓습니다.
+3. 값이 같으면 module-relative POSIX path의 UTF-8 byte, 0부터 시작하는 source byte 위치, callable ID의 UTF-8 byte 순서로 비교합니다.
+4. 세 식별값이 모두 같은 두 행은 임의로 순번을 붙이지 않고 `identityAmbiguous` 오류로 거절합니다.
+
+`sourceStartByte`는 JSON에서 정확히 공유할 수 있는 0부터 9,007,199,254,740,991까지만 허용합니다. CRAP의 numerator와 denominator는 이 상한을 적용하지 않고 arbitrary-precision integer로 비교합니다. 공통 반례는 [stable-sort-v1.json](../golden/crap/stable-sort-v1.json)에 있습니다.
+
+Golden JSON의 known row는 identity 세 field와 numerator, denominator만 가져야 하고 unknown row는 identity 세 field와 `unknownReason`만 가져야 합니다. 두 형태를 섞거나 다른 field를 더하면 `rowShapeInvalid`입니다. Numerator는 `^(0|[1-9][0-9]*)$`, denominator는 `^[1-9][0-9]*$`에 맞는 JSON string이어야 하며, plus, 공백, underscore와 leading zero는 허용하지 않습니다.
+
+Known fraction은 최대공약수가 1인 기약분수여야 합니다. `2/2`처럼 줄일 수 있는 값은
+`fractionNotReduced`이며, 언어의 fraction class가 자동으로 줄이기 전에 원래 두 decimal string을
+검사해야 합니다.

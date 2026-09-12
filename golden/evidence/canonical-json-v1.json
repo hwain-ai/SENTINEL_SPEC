@@ -1,0 +1,32 @@
+{
+  "contractVersion": "sentinel-fingerprint-json-v1",
+  "validCases": [
+    {
+      "id": "key-order-control-and-unicode",
+      "value": {
+        "z": "한글/😀",
+        "a": "quote\" slash/ backslash\\ nul\u0000 line\n"
+      },
+      "expectedHex": "7b2261223a2271756f74655c2220736c6173682f206261636b736c6173685c5c206e756c5c7530303030206c696e655c7530303061222c227a223a22ed959ceab8802ff09f9880227d"
+    },
+    {
+      "id": "normalization-is-not-applied",
+      "value": {
+        "composed": "é",
+        "decomposed": "é"
+      },
+      "expectedHex": "7b22636f6d706f736564223a22c3a9222c226465636f6d706f736564223a2265cc81227d"
+    },
+    {
+      "id": "safe-primitives",
+      "value": [
+        null,
+        false,
+        true,
+        0,
+        9007199254740991
+      ],
+      "expectedHex": "5b6e756c6c2c66616c73652c747275652c302c393030373139393235343734303939315d"
+    }
+  ]
+}

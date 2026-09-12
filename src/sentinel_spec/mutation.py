@@ -17,6 +17,7 @@ MUTATION_STATES = (
     "ignored",
     "toolError",
 )
+MAX_SAFE_INTEGER = 9_007_199_254_740_991
 
 
 class MutationInputError(ValueError):
@@ -41,7 +42,7 @@ class MutationResult:
 def _require_nonnegative_integer(value, field_name):
     if not isinstance(value, int) or isinstance(value, bool):
         raise MutationInputError(f"{field_name}NotInteger")
-    if value < 0:
+    if value < 0 or value > MAX_SAFE_INTEGER:
         raise MutationInputError(f"{field_name}OutOfRange")
 
 

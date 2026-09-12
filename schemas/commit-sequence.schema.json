@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentinel.invalid/schemas/commit-sequence.schema.json",
+  "title": "SENTINEL authenticated commit sequence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "hmacSha256",
+    "lastAllocated",
+    "version"
+  ],
+  "properties": {
+    "hmacSha256": {
+      "description": "HMAC-SHA-256 over the canonical body excluding this field, using the commit-sequence v1 domain and a key derived with the commit-sequence-key v1 domain.",
+      "$ref": "#/$defs/sha256"
+    },
+    "lastAllocated": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "version": {
+      "const": "commit-sequence-v1"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

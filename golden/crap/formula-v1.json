@@ -84,6 +84,34 @@
         "decimal": "9",
         "pass": false
       }
+    },
+    {
+      "id": "maximum-json-safe-counts",
+      "input": {
+        "cyclomaticComplexity": 9007199254740991,
+        "coveredUnits": 9007199254740991,
+        "totalUnits": 9007199254740991
+      },
+      "expected": {
+        "numerator": "9007199254740991",
+        "denominator": "1",
+        "decimal": "9007199254740991",
+        "pass": false
+      }
+    },
+    {
+      "id": "maximum-json-safe-partial-coverage",
+      "input": {
+        "cyclomaticComplexity": 9007199254740991,
+        "coveredUnits": 1,
+        "totalUnits": 9007199254740991
+      },
+      "expected": {
+        "numerator": "730750818665451053453650343324823102875487961081",
+        "denominator": "9007199254740991",
+        "decimal": "81129638414606645666991986180102",
+        "pass": false
+      }
     }
   ],
   "decimalCases": [
@@ -95,8 +123,8 @@
     },
     {
       "id": "half-even-down",
-      "numerator": "246913578025",
-      "denominator": "2000000000000",
+      "numerator": "9876543121",
+      "denominator": "80000000000",
       "expected": "0.123456789012"
     },
     {
@@ -116,6 +144,12 @@
       "numerator": "17",
       "denominator": "4",
       "expected": "4.25"
+    },
+    {
+      "id": "eighty-by-forty-eight-digit-fraction",
+      "numerator": "12345678901234567890123456789012345678901234567890123456789012345678901234567891",
+      "denominator": "987654321098765432109876543210987654321098765431",
+      "expected": "12499999886093750001423828124982.202148437722"
     }
   ],
   "invalidCases": [
@@ -163,6 +197,44 @@
         "totalUnits": 1
       },
       "error": "coveredUnitsExceedTotalUnits"
+    }
+  ],
+  "rawJsonInvalidCases": [
+    {
+      "id": "json-unsafe-complexity",
+      "rawInput": "{\"cyclomaticComplexity\":9007199254740992,\"coveredUnits\":1,\"totalUnits\":1}",
+      "jsonError": "jsonIntegerOutOfRange",
+      "semanticError": "cyclomaticComplexityOutOfRange"
+    },
+    {
+      "id": "json-unsafe-covered-units",
+      "rawInput": "{\"cyclomaticComplexity\":1,\"coveredUnits\":9007199254740992,\"totalUnits\":9007199254740991}",
+      "jsonError": "jsonIntegerOutOfRange",
+      "semanticError": "coveredUnitsOutOfRange"
+    },
+    {
+      "id": "json-unsafe-total-units",
+      "rawInput": "{\"cyclomaticComplexity\":1,\"coveredUnits\":0,\"totalUnits\":9007199254740992}",
+      "jsonError": "jsonIntegerOutOfRange",
+      "semanticError": "totalUnitsOutOfRange"
+    },
+    {
+      "id": "json-unsafe-complexity-plus-one",
+      "rawInput": "{\"cyclomaticComplexity\":9007199254740993,\"coveredUnits\":1,\"totalUnits\":1}",
+      "jsonError": "jsonIntegerOutOfRange",
+      "semanticError": "cyclomaticComplexityOutOfRange"
+    },
+    {
+      "id": "json-unsafe-covered-units-plus-one",
+      "rawInput": "{\"cyclomaticComplexity\":1,\"coveredUnits\":9007199254740993,\"totalUnits\":9007199254740991}",
+      "jsonError": "jsonIntegerOutOfRange",
+      "semanticError": "coveredUnitsOutOfRange"
+    },
+    {
+      "id": "json-unsafe-total-units-plus-one",
+      "rawInput": "{\"cyclomaticComplexity\":1,\"coveredUnits\":0,\"totalUnits\":9007199254740993}",
+      "jsonError": "jsonIntegerOutOfRange",
+      "semanticError": "totalUnitsOutOfRange"
     }
   ]
 }

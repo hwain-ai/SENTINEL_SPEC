@@ -1,0 +1,70 @@
+{
+  "kind": "exploratory-backend-evaluation",
+  "observedOn": "2026-09-07",
+  "sentinelAdmission": false,
+  "environment": {
+    "platform": "linux/amd64",
+    "go": "1.27.1",
+    "java": "17.0.20.1+1",
+    "maven": "3.9.16",
+    "junit": "5.10.2"
+  },
+  "fixtures": {
+    "goSource": "package backendprobe\n\nfunc Positive(value int) bool {\n\treturn value > 0\n}\n",
+    "goModule": "module sentinel.example/backendprobe\n\ngo 1.25.0\n",
+    "goStrongTest": "package backendprobe\n\nimport \"testing\"\n\nfunc TestPositive(t *testing.T) {\n\tif !Positive(1) || Positive(0) || Positive(-1) {\n\t\tt.Fatal(\"positive boundary is incorrect\")\n\t}\n}\n",
+    "goWeakTest": "package backendprobe\n\nimport \"testing\"\n\nfunc TestPositive(t *testing.T) {\n\tif !Positive(1) {\n\t\tt.Fatal(\"positive boundary is incorrect\")\n\t}\n}\n",
+    "goMutestingConfig": "json_output: true\nskip_without_test: false\nskip_with_build_tags: false\nsilent_mode: true\n",
+    "javaSource": "package sentinel.example;\n\npublic final class Value {\n    public boolean positive(int value) {\n        return value > 0;\n    }\n}\n",
+    "javaStrongTest": "package sentinel.example;\n\nimport org.junit.jupiter.api.Test;\nimport static org.junit.jupiter.api.Assertions.assertFalse;\nimport static org.junit.jupiter.api.Assertions.assertTrue;\n\nclass ValueTest {\n    @Test void checksBoundary() {\n        Value subject = new Value();\n        assertTrue(subject.positive(1));\n        assertFalse(subject.positive(0));\n        assertFalse(subject.positive(-1));\n    }\n}\n",
+    "javaWeakDifference": "Remove only the two assertFalse calls from javaStrongTest.",
+    "javaBuild": {
+      "compilerPlugin": "3.13.0",
+      "surefirePlugin": "3.2.5",
+      "compilerRelease": "17",
+      "pitPlugin": "1.30.0",
+      "pitJunit5Plugin": "1.2.3",
+      "targetClasses": ["sentinel.example.Value"],
+      "targetTests": ["sentinel.example.ValueTest"],
+      "outputFormats": ["XML"],
+      "timestampedReports": false,
+      "threads": 1,
+      "mutationThreshold": 100
+    }
+  },
+  "runs": [
+    {
+      "backend": "pit",
+      "version": "1.30.0",
+      "arguments": ["test", "org.pitest:pitest-maven:1.30.0:mutationCoverage"],
+      "strong": {"generated": 3, "killed": 3, "survived": 0, "exitCode": 0},
+      "weak": {"generated": 3, "killed": 1, "survived": 2, "exitCode": 1}
+    },
+    {
+      "backend": "avito-tech/go-mutesting",
+      "commit": "48d0401f00fbfb9502adc2c5138497ad8ccfafb9",
+      "goRunPackage": "github.com/avito-tech/go-mutesting/cmd/go-mutesting@48d0401f00fbfb9502adc2c5138497ad8ccfafb9",
+      "strongArguments": ["--exec-timeout=15", "./..."],
+      "weakArguments": ["--config=config.yml", "--exec-timeout=15", "./..."],
+      "strong": {"generated": 3, "killed": 3, "survived": 0, "exitCode": 0},
+      "weak": {"generated": 3, "killed": 1, "survived": 2, "exitCode": 0}
+    },
+    {
+      "backend": "go-gremlins/gremlins",
+      "version": "0.6.0",
+      "archive": "gremlins_0.6.0_linux_amd64.tar.gz",
+      "archiveSha256": "b02a42e47935f891c9a411d68c07e211c7082609e79c2435b67c85ee9658c538",
+      "strongArguments": ["unleash", "--workers", "1", "--output", "report.json"],
+      "weakArguments": ["unleash", "--workers", "1", "--threshold-efficacy", "100", "--threshold-mcover", "100", "--output", "survivor-report.json"],
+      "strong": {"generated": 2, "killed": 2, "survived": 0, "exitCode": 0},
+      "weak": {"generated": 2, "killed": 1, "survived": 1, "exitCode": 0}
+    }
+  ],
+  "limitations": [
+    "These are small exploratory runs, not SENTINEL conformance or admission results.",
+    "The two Go tools use different mutation operators; counts cannot rank detection quality.",
+    "No large-project performance, process-tree termination, complete inventory, or typed assertion replay certification was performed.",
+    "Commercial products and Stryker.NET were researched but not installed or executed.",
+    "No new production Go or Java adapter was enabled."
+  ]
+}

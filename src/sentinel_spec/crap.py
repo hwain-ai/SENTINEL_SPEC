@@ -6,6 +6,7 @@ from fractions import Fraction
 _DECIMAL_PLACES = 12
 _DECIMAL_SCALE = 10**_DECIMAL_PLACES
 _CRAP_LIMIT = 8
+_MAX_SAFE_INTEGER = 9_007_199_254_740_991
 
 
 class CrapInputError(ValueError):
@@ -21,17 +22,19 @@ def _require_integer(value, field_name):
         raise CrapInputError(f"{field_name}NotInteger")
 
 
+def _require_range(value, minimum, field_name):
+    if value < minimum or value > _MAX_SAFE_INTEGER:
+        raise CrapInputError(f"{field_name}OutOfRange")
+
+
 def _validate_inputs(cyclomatic_complexity, covered_units, total_units):
     _require_integer(cyclomatic_complexity, "cyclomaticComplexity")
     _require_integer(covered_units, "coveredUnits")
     _require_integer(total_units, "totalUnits")
 
-    if cyclomatic_complexity < 1:
-        raise CrapInputError("cyclomaticComplexityOutOfRange")
-    if covered_units < 0:
-        raise CrapInputError("coveredUnitsOutOfRange")
-    if total_units <= 0:
-        raise CrapInputError("totalUnitsOutOfRange")
+    _require_range(cyclomatic_complexity, 1, "cyclomaticComplexity")
+    _require_range(covered_units, 0, "coveredUnits")
+    _require_range(total_units, 1, "totalUnits")
     if covered_units > total_units:
         raise CrapInputError("coveredUnitsExceedTotalUnits")
 

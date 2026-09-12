@@ -1,7 +1,7 @@
 ---
 type: Executable Contract
 status: draft
-generated: { by: "process:codex", at: "2026-09-03T06:15:42Z" }
+generated: { by: "process:codex", at: "2026-09-03T09:45:52Z" }
 owner: "human:hwain"
 sources:
   - resource: ../golden/gate/mutation-v1.json
@@ -34,7 +34,7 @@ Mutant는 mutation 도구가 결함을 흉내 내기 위해 원본 코드를 한
 
 ## 판정 순서
 
-1. 9개 상태 count, inScope, unauthorizedExclusion이 bool이 아닌 0 이상의 정수인지 확인합니다.
+1. 9개 상태 count, inScope, unauthorizedExclusion이 bool이 아닌 0 이상 9,007,199,254,740,991 이하의 정수인지 확인합니다. 이 범위는 JSON을 사용하는 다섯 언어가 같은 정수를 손실 없이 읽기 위한 공통 한계입니다.
 2. 9개 상태 count의 합이 inScope와 정확히 같은지 확인합니다.
 3. inScope가 0이면 통과시키지 않고 kill rate도 만들지 않습니다.
 4. inScope가 1 이상이고 killed가 inScope와 같으며 나머지 8개 상태와 unauthorizedExclusion이 모두 0일 때만 통과합니다.
@@ -42,4 +42,10 @@ Mutant는 mutation 도구가 결함을 흉내 내기 위해 원본 코드를 한
 
 따라서 timeout-only, ignored-only, survived가 하나라도 있는 결과와 승인받지 않은 제외가 있는 결과는 모두 실패합니다. zero-mutant 결과를 100%로 꾸미지 않습니다.
 
-언어별 동일성 검증 자료는 [mutation-v1.json](../golden/gate/mutation-v1.json)입니다.
+언어별 동일성 검증 자료는 [mutation-v1.json](../golden/gate/mutation-v1.json)입니다. 이 자료는 `2^53-1` all-killed와 one-survived 정상 입력, 각 count field의 `2^53`과 `2^53+1` 오류를 따로 고정합니다.
+
+Golden의 unsafe 입력은 `rawJsonInvalidCases[].rawInput`에 JSON 원문 string으로 보존합니다. 각
+runtime은 이 원문을 UTF-8 byte로 만든 뒤 duplicate key, fraction·exponent·negative-zero number
+token과 safe-integer 초과를 native JSON number 변환 전에 검사합니다. Unsafe token은
+`jsonIntegerOutOfRange`로 중단하며 일반 JavaScript `JSON.parse`를 먼저 호출하지 않습니다. 이
+순서를 지켜야 `2^53`과 `2^53+1`이 서로 다른 반례로 남습니다.

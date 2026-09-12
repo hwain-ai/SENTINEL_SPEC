@@ -91,6 +91,19 @@ class MutationGateTests(unittest.TestCase):
         with self.assertRaisesRegex(MutationInputError, "mutationCountOutOfRange"):
             evaluate_mutation(counts(killed=-1), in_scope=-1)
 
+    def test_json_unsafe_integer_counts_are_rejected(self):
+        unsafe = 9_007_199_254_740_992
+        cases = (
+            (counts(killed=unsafe), unsafe, 0, "mutationCountOutOfRange"),
+            (counts(), unsafe, 0, "inScopeOutOfRange"),
+            (counts(killed=1), 1, unsafe, "unauthorizedExclusionOutOfRange"),
+        )
+
+        for mutation_counts, in_scope, unauthorized, error in cases:
+            with self.subTest(error=error):
+                with self.assertRaisesRegex(MutationInputError, error):
+                    evaluate_mutation(mutation_counts, in_scope, unauthorized)
+
     def test_boolean_in_scope_is_rejected(self):
         with self.assertRaisesRegex(MutationInputError, "inScopeNotInteger"):
             evaluate_mutation(counts(), in_scope=False)

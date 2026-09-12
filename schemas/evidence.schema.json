@@ -1,0 +1,554 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentinel.invalid/schemas/evidence.schema.json",
+  "title": "SENTINEL authenticated terminal evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "certification",
+    "command",
+    "commitSequence",
+    "committedAtUtc",
+    "completedAtUtc",
+    "components",
+    "correlationId",
+    "diagnosticCodes",
+    "eventCount",
+    "events",
+    "exitCode",
+    "fingerprintVersion",
+    "hmacSha256",
+    "keyEpoch",
+    "language",
+    "mode",
+    "observationSource",
+    "projectStateHmac",
+    "runId",
+    "schemaVersion",
+    "sourceRunId",
+    "specVersion",
+    "startedAtUtc",
+    "startedSha256",
+    "terminalStatus"
+  ],
+  "properties": {
+    "certification": {
+      "type": "boolean"
+    },
+    "command": {
+      "enum": [
+        "crap",
+        "mutation",
+        "check"
+      ]
+    },
+    "commitSequence": {
+      "$ref": "#/$defs/positiveUint64Text"
+    },
+    "committedAtUtc": {
+      "$ref": "#/$defs/utcTimestamp"
+    },
+    "completedAtUtc": {
+      "$ref": "#/$defs/utcTimestamp"
+    },
+    "components": {
+      "$ref": "#/$defs/components"
+    },
+    "correlationId": {
+      "$ref": "#/$defs/uuid"
+    },
+    "diagnosticCodes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/safeCode"
+      }
+    },
+    "eventCount": {
+      "$ref": "#/$defs/count"
+    },
+    "events": {
+      "type": "array",
+      "description": "Sort unique public hmac-sha256 finding fingerprints by UTF-8 bytes, assign one occurrence event each, then use one-based lowercase zero-padded 32-hex event IDs and filenames in that order.",
+      "items": {
+        "$ref": "#/$defs/eventManifestEntry"
+      }
+    },
+    "exitCode": {
+      "enum": [
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "fingerprintVersion": {
+      "const": "sentinel-fingerprint-v1"
+    },
+    "hmacSha256": {
+      "description": "HMAC-SHA-256 over the sentinel-fingerprint-json-v1 body after deriving a key with the SENTINEL evidence-key v1 domain; the body excludes only this field.",
+      "$ref": "#/$defs/sha256"
+    },
+    "keyEpoch": {
+      "$ref": "#/$defs/positiveSafeInteger"
+    },
+    "language": {
+      "enum": [
+        "python",
+        "typescript",
+        "go",
+        "java",
+        "clojure"
+      ]
+    },
+    "mode": {
+      "enum": [
+        "strict",
+        "local"
+      ]
+    },
+    "observationSource": {
+      "enum": [
+        "fresh",
+        "cache"
+      ]
+    },
+    "projectStateHmac": {
+      "description": "Rotation-stable HMAC-SHA-256 of the project-state-binding v1 domain followed by the decoded 16-byte projectIdentifier, keyed by cleanupLeaseKey.",
+      "$ref": "#/$defs/sha256"
+    },
+    "runId": {
+      "$ref": "#/$defs/uuid"
+    },
+    "schemaVersion": {
+      "const": "sentinel-evidence-v1"
+    },
+    "sourceRunId": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/uuid"
+        }
+      ]
+    },
+    "specVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "startedAtUtc": {
+      "$ref": "#/$defs/utcTimestamp"
+    },
+    "startedSha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "terminalStatus": {
+      "enum": [
+        "passed",
+        "toolError",
+        "qualityFailed",
+        "baselineFailed",
+        "dependencyError",
+        "backendError",
+        "evidenceError",
+        "cancelled"
+      ]
+    }
+  },
+  "$defs": {
+    "components": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "crap": {
+          "$ref": "#/$defs/crapComponent"
+        },
+        "mutation": {
+          "$ref": "#/$defs/mutationComponent"
+        }
+      }
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "crapComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "callableCount",
+        "maxNumerator",
+        "maxDenominator",
+        "pass",
+        "unknownCount"
+      ],
+      "properties": {
+        "callableCount": {
+          "$ref": "#/$defs/count"
+        },
+        "maxNumerator": {
+          "$ref": "#/$defs/nonnegativeDecimalText"
+        },
+        "maxDenominator": {
+          "$ref": "#/$defs/positiveDecimalText"
+        },
+        "pass": {
+          "type": "boolean"
+        },
+        "unknownCount": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "eventManifestEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "filename",
+        "sha256"
+      ],
+      "properties": {
+        "filename": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}\\.json$"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "mutationComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inScope",
+        "killed",
+        "survived",
+        "uncovered",
+        "timedOut",
+        "compileError",
+        "runtimeError",
+        "pending",
+        "ignored",
+        "toolError",
+        "unauthorizedExclusion",
+        "pass"
+      ],
+      "properties": {
+        "inScope": {
+          "$ref": "#/$defs/count"
+        },
+        "killed": {
+          "$ref": "#/$defs/count"
+        },
+        "survived": {
+          "$ref": "#/$defs/count"
+        },
+        "uncovered": {
+          "$ref": "#/$defs/count"
+        },
+        "timedOut": {
+          "$ref": "#/$defs/count"
+        },
+        "compileError": {
+          "$ref": "#/$defs/count"
+        },
+        "runtimeError": {
+          "$ref": "#/$defs/count"
+        },
+        "pending": {
+          "$ref": "#/$defs/count"
+        },
+        "ignored": {
+          "$ref": "#/$defs/count"
+        },
+        "toolError": {
+          "$ref": "#/$defs/count"
+        },
+        "unauthorizedExclusion": {
+          "$ref": "#/$defs/count"
+        },
+        "pass": {
+          "type": "boolean"
+        }
+      }
+    },
+    "nonnegativeDecimalText": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]*)$",
+      "maxLength": 96
+    },
+    "positiveDecimalText": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$",
+      "maxLength": 48
+    },
+    "positiveSafeInteger": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "positiveUint64Text": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "safeCode": {
+      "type": "string",
+      "pattern": "^[a-z][A-Za-z0-9]{0,63}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "utcTimestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]{0,8}[1-9])?Z$"
+    },
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "crap"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "components": {
+            "required": [
+              "crap"
+            ],
+            "maxProperties": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "mutation"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "components": {
+            "required": [
+              "mutation"
+            ],
+            "maxProperties": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "check"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "components": {
+            "required": [
+              "crap",
+              "mutation"
+            ],
+            "minProperties": 2
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "mode": {
+            "const": "strict"
+          }
+        },
+        "required": [
+          "mode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "observationSource": {
+            "const": "fresh"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "observationSource": {
+            "const": "fresh"
+          }
+        },
+        "required": [
+          "observationSource"
+        ]
+      },
+      "then": {
+        "properties": {
+          "sourceRunId": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "observationSource": {
+            "const": "cache"
+          }
+        },
+        "required": [
+          "observationSource"
+        ]
+      },
+      "then": {
+        "properties": {
+          "eventCount": {
+            "const": 0
+          },
+          "events": {
+            "maxItems": 0
+          },
+          "mode": {
+            "const": "local"
+          },
+          "sourceRunId": {
+            "$ref": "#/$defs/uuid"
+          }
+        }
+      }
+    },
+    {
+      "oneOf": [
+        {
+          "properties": {
+            "terminalStatus": {
+              "const": "passed"
+            },
+            "exitCode": {
+              "const": 0
+            }
+          }
+        },
+        {
+          "properties": {
+            "terminalStatus": {
+              "const": "toolError"
+            },
+            "exitCode": {
+              "const": 1
+            }
+          }
+        },
+        {
+          "properties": {
+            "terminalStatus": {
+              "const": "qualityFailed"
+            },
+            "exitCode": {
+              "const": 2
+            }
+          }
+        },
+        {
+          "properties": {
+            "terminalStatus": {
+              "const": "baselineFailed"
+            },
+            "exitCode": {
+              "const": 4
+            }
+          }
+        },
+        {
+          "properties": {
+            "terminalStatus": {
+              "const": "dependencyError"
+            },
+            "exitCode": {
+              "const": 5
+            }
+          }
+        },
+        {
+          "properties": {
+            "terminalStatus": {
+              "const": "backendError"
+            },
+            "exitCode": {
+              "const": 6
+            }
+          }
+        },
+        {
+          "properties": {
+            "terminalStatus": {
+              "const": "evidenceError"
+            },
+            "exitCode": {
+              "const": 7
+            }
+          }
+        },
+        {
+          "properties": {
+            "terminalStatus": {
+              "const": "cancelled"
+            },
+            "exitCode": {
+              "const": 8
+            }
+          }
+        }
+      ]
+    },
+    {
+      "if": {
+        "properties": {
+          "certification": {
+            "const": true
+          }
+        },
+        "required": [
+          "certification"
+        ]
+      },
+      "then": {
+        "properties": {
+          "mode": {
+            "const": "strict"
+          },
+          "observationSource": {
+            "const": "fresh"
+          },
+          "terminalStatus": {
+            "const": "passed"
+          }
+        }
+      }
+    }
+  ]
+}

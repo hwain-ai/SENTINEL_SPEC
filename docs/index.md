@@ -11,7 +11,13 @@ SENTINEL_SPEC의 사용법과 변경 이유를 찾는 문서 시작점입니다.
 * [CRAP 수치 계약](../contracts/crap.md) - exact fraction 계산, CRAP 8 이하 gate와 표준 소수 규칙
 * [Mutation killed-only gate](../contracts/mutation-gate.md) - 9개 상태 합계와 모든 mutant killed 판정 규칙
 * [CRAP golden vector](../golden/crap/formula-v1.json) - 언어별 CRAP 구현이 재현할 입력과 기대값
+* [CRAP 정렬 golden vector](../golden/crap/stable-sort-v1.json) - 위험도·UTF-8 byte·source byte 위치의 공통 정렬 규칙
 * [Mutation golden vector](../golden/gate/mutation-v1.json) - 언어별 mutation gate가 재현할 입력과 기대값
+
+## 도구 선택 근거
+
+* [외부 mutation 도구 후보 평가](mutation-backend-evaluation.md) - 개발자 공개 경험, PIT·Go 도구 실제 실행, Stryker 유지와 plugin 경계
+* [외부 adapter 구현 진행](external-adapter-progress.md) - Go 반복 대조·Java 후보별 정상 대조와 변이 재실행, 남은 운영 조건
 
 ## 운영 기록
 

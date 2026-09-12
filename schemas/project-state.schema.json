@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentinel.invalid/schemas/project-state.schema.json",
+  "title": "SENTINEL private project state v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "cleanupLeaseKey",
+    "fingerprintHmacKey",
+    "keyEpoch",
+    "projectIdentifier",
+    "schemaVersion",
+    "stateVersion"
+  ],
+  "properties": {
+    "cleanupLeaseKey": {
+      "$ref": "#/$defs/base64url256"
+    },
+    "fingerprintHmacKey": {
+      "$ref": "#/$defs/base64url256"
+    },
+    "keyEpoch": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "projectIdentifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{22}$"
+    },
+    "schemaVersion": {
+      "const": "sentinel-project-state-v1"
+    },
+    "stateVersion": {
+      "const": "state-v1"
+    }
+  },
+  "$defs": {
+    "base64url256": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{43}$"
+    }
+  }
+}
