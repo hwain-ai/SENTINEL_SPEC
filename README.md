@@ -21,8 +21,8 @@ package 이름은 sentinel-spec이고 Python 3.9 이상에서 설치할 수 있�
 
 repository의 계약 검증은 다음 명령으로 실행합니다: `/usr/bin/python3 -m unittest discover -s tests -v`.
 
-원격 저장소는 github.com/hwain-hwang/SENTINEL_SPEC 입니다.
+원격 저장소는 github.com/hwain-ai/SENTINEL_SPEC 입니다.
 
 ## 설계 근거
 
-원본 작업공간 설계 문서: [2026-08-native-quality-tools.md](https://github.com/hwain-hwang/SENTINEL/blob/main/docs/design-docs/2026-08-native-quality-tools.md) (SENTINEL 저장소)
+원본 작업공간 설계 문서: [2026-08-native-quality-tools.md](https://github.com/hwain-ai/SENTINEL/blob/main/docs/design-docs/2026-08-native-quality-tools.md) (SENTINEL 저장소)
