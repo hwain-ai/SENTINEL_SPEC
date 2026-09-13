@@ -27,9 +27,25 @@ from .mutation import (
     MutationResult,
     evaluate_mutation,
 )
+from .threshold import (
+    DEFAULT_CRAP_MAX,
+    DEFAULT_MUTATION_MIN,
+    THRESHOLD_PATTERN,
+    ThresholdInputError,
+    parse_crap_max,
+    parse_mutation_min,
+    parse_threshold,
+)
 
 __all__ = [
     "CrapInputError",
+    "DEFAULT_CRAP_MAX",
+    "DEFAULT_MUTATION_MIN",
+    "THRESHOLD_PATTERN",
+    "ThresholdInputError",
+    "parse_crap_max",
+    "parse_mutation_min",
+    "parse_threshold",
     "EvidenceContractError",
     "MUTATION_STATES",
     "MutationInputError",

@@ -1,5 +1,10 @@
 # 변경 기록
 
+## 2026-09-13
+
+- **Creation** threshold.py·threshold-v1.json: CRAP 상한(기본 8)과 최소 kill 비율(기본 100%)을 소수점 두 자리까지의 문자열로 받아 정확한 분수로 읽는 공통 계약 추가. crap_gate_passes와 evaluate_mutation이 기준값 인자를 받으며 기본값 동작은 이전과 같다.
+- **Update** crap.md·mutation-gate.md·README·index: 기준값 형식과 판정식을 계약에 기록.
+
 ## 2026-09-08
 
 - **Update** external-adapter-progress.md: Java 전체 260 테스트·724 함수 CRAP 최종 통과 반영. 경로 교체·동적 테스트 누락·묶인 미지원 실패의 반례 수정과 운영 미완료 항목 구분.

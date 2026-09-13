@@ -2,10 +2,11 @@
 
 from fractions import Fraction
 
+from .threshold import DEFAULT_CRAP_MAX, parse_crap_max
+
 
 _DECIMAL_PLACES = 12
 _DECIMAL_SCALE = 10**_DECIMAL_PLACES
-_CRAP_LIMIT = 8
 _MAX_SAFE_INTEGER = 9_007_199_254_740_991
 
 
@@ -53,11 +54,17 @@ def calculate_crap(cyclomatic_complexity, covered_units, total_units):
     return Fraction(numerator, denominator)
 
 
-def crap_gate_passes(cyclomatic_complexity, covered_units, total_units):
-    """Return whether the exact CRAP score is at most eight."""
+def crap_gate_passes(
+    cyclomatic_complexity,
+    covered_units,
+    total_units,
+    crap_max=DEFAULT_CRAP_MAX,
+):
+    """Return whether the exact CRAP score is at most the exact limit (default 8)."""
 
+    limit = parse_crap_max(crap_max)
     value = calculate_crap(cyclomatic_complexity, covered_units, total_units)
-    return value.numerator <= _CRAP_LIMIT * value.denominator
+    return value.numerator * limit.denominator <= limit.numerator * value.denominator
 
 
 def render_canonical_decimal(value):

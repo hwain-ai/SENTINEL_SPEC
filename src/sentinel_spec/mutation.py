@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from fractions import Fraction
 from typing import Optional
 
+from .threshold import DEFAULT_MUTATION_MIN, parse_mutation_min
+
 
 MUTATION_STATES = (
     "killed",
@@ -59,9 +61,19 @@ def _validate_state_keys(counts):
         raise MutationInputError("missingMutationState")
 
 
-def evaluate_mutation(counts, in_scope, unauthorized_exclusion=0):
-    """Validate all counts and return the killed-only mutation gate result."""
+def evaluate_mutation(
+    counts,
+    in_scope,
+    unauthorized_exclusion=0,
+    mutation_min=DEFAULT_MUTATION_MIN,
+):
+    """Validate all counts and return the minimum-kill-rate gate result.
 
+    The default minimum of 100 percent is the killed-only gate: every in-scope
+    mutant must be killed, so no other state can remain.
+    """
+
+    minimum = parse_mutation_min(mutation_min)
     _validate_state_keys(counts)
     for state in MUTATION_STATES:
         _require_nonnegative_integer(counts[state], "mutationCount")
@@ -75,11 +87,11 @@ def evaluate_mutation(counts, in_scope, unauthorized_exclusion=0):
 
     killed = counts["killed"]
     kill_rate = None if in_scope == 0 else Fraction(killed, in_scope)
+    # 100 percent means killed == in_scope, which forces every other state to zero.
     passed = (
         in_scope >= 1
-        and killed == in_scope
-        and all(counts[state] == 0 for state in MUTATION_STATES[1:])
         and unauthorized_exclusion == 0
+        and killed * 100 * minimum.denominator >= minimum.numerator * in_scope
     )
     return MutationResult(
         in_scope=in_scope,

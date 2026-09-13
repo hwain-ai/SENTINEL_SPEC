@@ -325,3 +325,68 @@ class ResultSchemaTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ThresholdGoldenVectorTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.vectors = load_json("golden/gate/threshold-v1.json")
+
+    def test_defaults_and_pattern_match_the_shared_module(self):
+        from sentinel_spec.threshold import (
+            DEFAULT_CRAP_MAX,
+            DEFAULT_MUTATION_MIN,
+            THRESHOLD_PATTERN,
+        )
+
+        self.assertEqual(self.vectors["defaults"]["crapMax"], DEFAULT_CRAP_MAX)
+        self.assertEqual(self.vectors["defaults"]["mutationMin"], DEFAULT_MUTATION_MIN)
+        self.assertEqual(self.vectors["thresholdPattern"], THRESHOLD_PATTERN.pattern)
+
+    def test_crap_cases_match_the_exact_limit_comparison(self):
+        for case in self.vectors["crapCases"]:
+            with self.subTest(case=case["id"]):
+                inputs = case["input"]
+                self.assertEqual(
+                    crap_gate_passes(
+                        inputs["cyclomaticComplexity"],
+                        inputs["coveredUnits"],
+                        inputs["totalUnits"],
+                        case["crapMax"],
+                    ),
+                    case["expected"]["pass"],
+                )
+
+    def test_mutation_cases_match_the_minimum_kill_rate_gate(self):
+        for case in self.vectors["mutationCases"]:
+            with self.subTest(case=case["id"]):
+                result = evaluate_mutation(
+                    case["counts"],
+                    case["inScope"],
+                    case["unauthorizedExclusion"],
+                    case["mutationMin"],
+                )
+                self.assertEqual(result.passed, case["expected"]["pass"])
+
+    def test_invalid_thresholds_are_rejected_with_stable_codes(self):
+        from sentinel_spec.threshold import (
+            ThresholdInputError,
+            parse_crap_max,
+            parse_mutation_min,
+        )
+
+        for value in self.vectors["invalidThresholds"]:
+            with self.subTest(value=value):
+                with self.assertRaises(ThresholdInputError) as raised:
+                    parse_crap_max(value)
+                self.assertEqual("crapMaxInvalid", raised.exception.code)
+        for value in self.vectors["invalidCrapMaxes"]:
+            with self.subTest(value=value):
+                with self.assertRaises(ThresholdInputError) as raised:
+                    parse_crap_max(value)
+                self.assertEqual("crapMaxOutOfRange", raised.exception.code)
+        for value in self.vectors["invalidMutationMins"]:
+            with self.subTest(value=value):
+                with self.assertRaises(ThresholdInputError) as raised:
+                    parse_mutation_min(value)
+                self.assertEqual("mutationMinOutOfRange", raised.exception.code)

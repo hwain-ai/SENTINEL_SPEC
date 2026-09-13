@@ -29,9 +29,15 @@ sources:
 1. denominator를 T의 세제곱으로 계산합니다.
 2. numerator를 CC의 제곱 곱하기 `(T-C)`의 세제곱에 CC 곱하기 denominator를 더해 계산합니다.
 3. numerator와 denominator의 최대공약수로 나눠 기약분수를 만듭니다.
-4. 원래 numerator가 `8 × denominator` 이하일 때만 통과합니다. 표시용 소수는 판정에 사용하지 않습니다.
+4. 원래 numerator가 `limit × denominator` 이하일 때만 통과합니다. limit는 검사 요청이 넘기는 CRAP 상한이며 기본값은 8입니다. 표시용 소수는 판정에 사용하지 않습니다.
 
-예를 들어 CC가 4이고 C가 3, T가 4이면 계산 전 분수는 272/64이고 기약분수는 17/4입니다. 표준 소수는 4.25이며 8 이하이므로 통과합니다.
+예를 들어 CC가 4이고 C가 3, T가 4이면 계산 전 분수는 272/64이고 기약분수는 17/4입니다. 표준 소수는 4.25이며 기본 상한 8 이하이므로 통과합니다. 같은 값은 상한 4.25에서는 통과하고 4.24에서는 실패합니다.
+
+## 상한 기준값 형식
+
+CRAP 상한과 mutation 최소 kill 비율은 같은 문자열 형식을 씁니다. 정수 또는 소수점 아래 최대 두 자리의 십진 문자열이며 정규식 `^(0|[1-9][0-9]*)(\.[0-9]{1,2})?$`에 맞아야 합니다. 앞자리 0, 부호, 공백, 지수 표기, 세 자리 이상의 소수는 `crapMaxInvalid`로 거부합니다. 문자열은 binary float 없이 정확한 분수로 읽습니다. 예를 들어 "8.5"는 17/2입니다. CRAP 상한은 0보다 커야 하며 0은 `crapMaxOutOfRange`입니다. 판정은 `numerator × limit.denominator ≤ limit.numerator × denominator`의 정수 비교입니다.
+
+언어별 동일성 검증 자료는 [threshold-v1.json](../golden/gate/threshold-v1.json)입니다. 기본값, 정규식, 상한별 통과·실패 사례와 거부해야 하는 문자열을 함께 고정합니다.
 
 ## 표준 소수
 
