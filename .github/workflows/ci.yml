@@ -1,0 +1,20 @@
+# 공통 계약과 golden vector 시험. 표준 라이브러리만 쓴다.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run the contract tests
+        run: python3 -B -m unittest discover -s tests -v
