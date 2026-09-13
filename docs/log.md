@@ -2,6 +2,7 @@
 
 ## 2026-09-13
 
+- **Update** evidence.schema.json·evidence_contract.py·evidence-v1.json: crap 구성요소에 crapMax, mutation 구성요소에 mutationMin 문자열을 필수로 추가. 증거 파일이 자기 판정에 쓴 기준값을 담아야 의미 검사가 기준값과 무관하게 재계산된다. 세 정상 사례의 body·HMAC·파일 지문은 참조 구현으로 다시 계산했다. 이 항목이 없는 이전 증거 파일은 더 이상 유효하지 않다.
 - **Creation** threshold.py·threshold-v1.json: CRAP 상한(기본 8)과 최소 kill 비율(기본 100%)을 소수점 두 자리까지의 문자열로 받아 정확한 분수로 읽는 공통 계약 추가. crap_gate_passes와 evaluate_mutation이 기준값 인자를 받으며 기본값 동작은 이전과 같다.
 - **Update** crap.md·mutation-gate.md·README·index: 기준값 형식과 판정식을 계약에 기록.
 

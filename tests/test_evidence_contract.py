@@ -337,6 +337,7 @@ class EvidenceFileContractTests(unittest.TestCase):
             set(self.schema["$defs"]["crapComponent"]["required"]),
             {
                 "callableCount",
+                "crapMax",
                 "maxDenominator",
                 "maxNumerator",
                 "pass",
@@ -559,6 +560,7 @@ class EvidenceFileContractTests(unittest.TestCase):
         body["components"] = {
             "crap": {
                 "callableCount": 0,
+                "crapMax": "8",
                 "maxNumerator": "0",
                 "maxDenominator": "1",
                 "pass": False,
@@ -577,6 +579,7 @@ class EvidenceFileContractTests(unittest.TestCase):
         invalid_components = (
             {
                 "callableCount": 0,
+                "crapMax": "8",
                 "maxNumerator": "8",
                 "maxDenominator": "1",
                 "pass": False,
@@ -584,6 +587,7 @@ class EvidenceFileContractTests(unittest.TestCase):
             },
             {
                 "callableCount": 1,
+                "crapMax": "8",
                 "maxNumerator": "0",
                 "maxDenominator": "1",
                 "pass": True,
@@ -609,6 +613,7 @@ class EvidenceFileContractTests(unittest.TestCase):
         body["components"] = {
             "crap": {
                 "callableCount": 1,
+                "crapMax": "8",
                 "maxNumerator": "0",
                 "maxDenominator": "1",
                 "pass": False,

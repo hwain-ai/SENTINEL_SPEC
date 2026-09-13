@@ -14,6 +14,7 @@ from typing import Mapping, Optional, Sequence, Tuple
 
 from .contract_json import ContractJsonError, load_contract_json_bytes
 from .mutation import MUTATION_STATES, MutationInputError, evaluate_mutation
+from .threshold import ThresholdInputError, parse_crap_max, parse_mutation_min
 
 
 MAX_SAFE_INTEGER = 9_007_199_254_740_991
@@ -55,6 +56,7 @@ _EVIDENCE_BODY_FIELDS = {
 }
 _CRAP_FIELDS = {
     "callableCount",
+    "crapMax",
     "maxNumerator",
     "maxDenominator",
     "pass",
@@ -62,6 +64,7 @@ _CRAP_FIELDS = {
 }
 _MUTATION_FIELDS = set(MUTATION_STATES) | {
     "inScope",
+    "mutationMin",
     "pass",
     "unauthorizedExclusion",
 }
@@ -638,10 +641,14 @@ def _validate_crap_component(component: object) -> None:
     has_no_known_callable = callable_count == unknown
     if has_no_known_callable != (numerator == 0 and denominator == 1):
         raise EvidenceContractError("crapComponentInventoryInvalid")
+    try:
+        crap_max = parse_crap_max(component["crapMax"])
+    except ThresholdInputError as error:
+        raise EvidenceContractError("crapComponentInvalid") from error
     expected = (
         callable_count > 0
         and unknown == 0
-        and numerator <= 8 * denominator
+        and numerator * crap_max.denominator <= crap_max.numerator * denominator
     )
     if component["pass"] != expected:
         raise EvidenceContractError("crapComponentSemanticsInvalid")
@@ -677,8 +684,9 @@ def _validate_mutation_component(component: object) -> None:
             counts,
             component["inScope"],
             component["unauthorizedExclusion"],
+            component["mutationMin"],
         )
-    except MutationInputError as error:
+    except (MutationInputError, ThresholdInputError) as error:
         raise EvidenceContractError("mutationComponentInvalid") from error
     if component["pass"] != result.passed:
         raise EvidenceContractError("mutationComponentSemanticsInvalid")

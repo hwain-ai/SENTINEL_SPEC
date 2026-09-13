@@ -179,11 +179,16 @@
       "minimum": 0,
       "maximum": 9007199254740991
     },
+    "thresholdText": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)(\\.[0-9]{1,2})?$"
+    },
     "crapComponent": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "callableCount",
+        "crapMax",
         "maxNumerator",
         "maxDenominator",
         "pass",
@@ -192,6 +197,9 @@
       "properties": {
         "callableCount": {
           "$ref": "#/$defs/count"
+        },
+        "crapMax": {
+          "$ref": "#/$defs/thresholdText"
         },
         "maxNumerator": {
           "$ref": "#/$defs/nonnegativeDecimalText"
@@ -239,11 +247,15 @@
         "ignored",
         "toolError",
         "unauthorizedExclusion",
+        "mutationMin",
         "pass"
       ],
       "properties": {
         "inScope": {
           "$ref": "#/$defs/count"
+        },
+        "mutationMin": {
+          "$ref": "#/$defs/thresholdText"
         },
         "killed": {
           "$ref": "#/$defs/count"

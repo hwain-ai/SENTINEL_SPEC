@@ -74,6 +74,7 @@
         "components": {
           "crap": {
             "callableCount": 1,
+            "crapMax": "8",
             "maxNumerator": "8",
             "maxDenominator": "1",
             "pass": true,
@@ -91,6 +92,7 @@
             "ignored": 0,
             "toolError": 0,
             "unauthorizedExclusion": 0,
+            "mutationMin": "100",
             "pass": true
           }
         },
@@ -102,10 +104,10 @@
           }
         ]
       },
-      "bodySha256": "7a784069c2ca3036f4c7d6214d5fba466f9d9f8b848033f471bdccb181419faa",
+      "bodySha256": "93a268af3b825df203d008c9fb475defad0d85e9db0f3855e27f7266d4527caf",
       "derivedKeyHex": "01512b3cea0b056409fbbd4f8ddb0e398393f0fb8304c794f8a80a2b2bc832c6",
-      "expectedHmac": "4542679c4ce361bd22a29d30a2f4bfd6149a8e2cbd6ef15984cfa1ff697cae32",
-      "fileSha256": "ab218bbdf80c72b02f93e432a938191612869681803a519f24379ba3b092df6a"
+      "expectedHmac": "1aaaa38f58a49f6d64bcda9f05037e4432c88766f02a3000f8d9ef520fffc66e",
+      "fileSha256": "40869448a1bc56bdc0a7c3cd528db367d838f71253733fab45d5e30a216d72ba"
     },
     {
       "id": "strict-mutation-quality-failed",
@@ -146,6 +148,7 @@
             "ignored": 0,
             "toolError": 0,
             "unauthorizedExclusion": 0,
+            "mutationMin": "100",
             "pass": false
           }
         },
@@ -157,10 +160,10 @@
           }
         ]
       },
-      "bodySha256": "5d1c590e3808d29cb8b76bf6634c7f4527068f9f1cb9ae456b6775e6db9a39f7",
+      "bodySha256": "fc10494c50679b59fcfd6ba736a0014cb5296d7c3b9c3342670e8012b8cca4e2",
       "derivedKeyHex": "01512b3cea0b056409fbbd4f8ddb0e398393f0fb8304c794f8a80a2b2bc832c6",
-      "expectedHmac": "7bef1a9e19193ef226bb17fe1845903a6c1ab8a08fbcc15f83756c345055d525",
-      "fileSha256": "8e27028edf6247a9117eaf07ddcd1ef5235509fb4ddaa351be0efe63defae6c1"
+      "expectedHmac": "63556501d29403c3e7ee1d9b8a58720155265f5aae2b0fb45078c93e39fb8939",
+      "fileSha256": "0527699d583a32d24e28b30bf4dba11ab6d4ccdec5a33bf22759b528178c4c1e"
     },
     {
       "id": "local-cache-crap-passed-not-certified",
@@ -189,6 +192,7 @@
         "components": {
           "crap": {
             "callableCount": 1,
+            "crapMax": "8",
             "maxNumerator": "8",
             "maxDenominator": "1",
             "pass": true,
@@ -198,10 +202,10 @@
         "eventCount": 0,
         "events": []
       },
-      "bodySha256": "2894f8c7915ce5f1f312654d21980ee0801fa743787a45fd299cfaabb86d3375",
+      "bodySha256": "c825eb19a7dc9f4e2a5e4c213a409494da9d8f41f43ba9cd3f821305466de0e7",
       "derivedKeyHex": "01512b3cea0b056409fbbd4f8ddb0e398393f0fb8304c794f8a80a2b2bc832c6",
-      "expectedHmac": "0c99cd8067d78b957f51b7a9bd338f3d5a95356bd0b984851bc4be17b053c676",
-      "fileSha256": "017c622e0c0bd0aba97fa3c1ba6dea3ff00f2a8a66c1b02825939259011e2660"
+      "expectedHmac": "8756ed2baf7716a6ffb14c769b3229c7266454fcf4124848fd45e2f9d90f0754",
+      "fileSha256": "99e00cb7efeaee7e2625a9a6ae93817bc1f4b39f917bd028a2aa6a0963e53163"
     }
   ],
   "semanticInvalidCases": [
@@ -284,6 +288,7 @@
       "field": "components.crap",
       "value": {
         "callableCount": 0,
+        "crapMax": "8",
         "maxNumerator": "0",
         "maxDenominator": "1",
         "pass": true,
@@ -307,6 +312,7 @@
         "ignored": 0,
         "toolError": 0,
         "unauthorizedExclusion": 0,
+        "mutationMin": "100",
         "pass": false
       },
       "error": "mutationComponentInvalid"
