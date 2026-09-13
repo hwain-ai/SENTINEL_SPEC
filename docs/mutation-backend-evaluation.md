@@ -92,7 +92,7 @@ SENTINEL_SPEC은 외부 도구가 아니라 언어별 결과가 지켜야 할 �
 
 ## 이번 개선과 다음 도입 순서
 
-이번 제품 변경은 SENTINEL_TS의 실제 Stryker 설치 진단과 실행 전 확인이다. 기존 doctor가 설치 상태와 관계없이 고정 버전과 ready를 출력하던 문제를 회귀 테스트로 재현하고 수정했다. 설치 파일을 읽어 버전·식별자·CLI 파일 지문을 확인하고, 누락·불일치는 unavailable과 종료 코드 5로 알린다. 기존 전체 설치 지문 검증기를 대체하지 않는다. [구현 설명](../../SENTINEL_TS/docs/stryker-runtime.md)
+이번 제품 변경은 SENTINEL_TS의 실제 Stryker 설치 진단과 실행 전 확인이다. 기존 doctor가 설치 상태와 관계없이 고정 버전과 ready를 출력하던 문제를 회귀 테스트로 재현하고 수정했다. 설치 파일을 읽어 버전·식별자·CLI 파일 지문을 확인하고, 누락·불일치는 unavailable과 종료 코드 5로 알린다. 기존 전체 설치 지문 검증기를 대체하지 않는다. [구현 설명](https://github.com/hwain-hwang/SENTINEL_TS/blob/main/docs/stryker-runtime.md)
 
 앞으로의 순서는 추천이며, 현재 backend 승인 기록을 덮어쓰지 않는다.
 

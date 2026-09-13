@@ -21,7 +21,7 @@ sources:
 | J: Java 연결 | PIT 1.30.0, JUnit 5, 7개 JAR 고정 목록 | 별도 PitProbeMain, 독립 dry-run·실제 PIT·XML 후보 대조와 후보별 4회 새 실행 | Java 17/Jupiter 일반 메서드 profile의 입력·결과·실패 위치 재현 증거 구현. 운영 인증은 미완료 |
 | R: 교차 검토 | G와 J 구현 | 원래 검사 보존·복원 경로 보호·무결성·취소·크기 제한, 실제 검증과 문서 | 발견한 중요 문제를 재현 후 수정하고 새 테스트로 재검증. 기본값 전환과 분리 |
 
-G와 J는 서로 다른 언어 저장소에서 독립 진행했고 R은 두 결과를 검토했다. Go는 추가 읽기 전용 검토자가 수정 후 회귀 테스트까지 실행했다. 세부 내용은 [Go 문서](../../SENTINEL_GO/docs/go-mutesting-adapter.md), [Java 실행 문서](../../SENTINEL_JAVA/docs/pit-execution-probe.md), [Java 보고서 계약](../../SENTINEL_JAVA/docs/pit-report-adapter.md)에 둔다.
+G와 J는 서로 다른 언어 저장소에서 독립 진행했고 R은 두 결과를 검토했다. Go는 추가 읽기 전용 검토자가 수정 후 회귀 테스트까지 실행했다. 세부 내용은 [Go 문서](https://github.com/hwain-hwang/SENTINEL_GO/blob/main/docs/go-mutesting-adapter.md), [Java 실행 문서](https://github.com/hwain-hwang/SENTINEL_JAVA/blob/main/docs/pit-execution-probe.md), [Java 보고서 계약](https://github.com/hwain-hwang/SENTINEL_JAVA/blob/main/docs/pit-report-adapter.md)에 둔다.
 
 재실행 증거를 추가하기 전 단계의 검증은 Go 전체 패키지·연결 관련 race·module 무결성 검사 통과, 변경 대상 Go 함수 124개 CRAP 기준 초과·측정 불가 0개, Java 전체 232개 테스트 통과·함수 670개 CRAP 기준 초과·측정 불가 0개였다. 이번 단계는 Java 증거 수집에 한정하며 Go 구현·승인 상태는 바꾸지 않았다. 기존 Java 문서의 type 누락과 비표준 변경 이력 항목 수정도 이전 단계 이력이다. 문서 owner는 임의로 지정하지 않았다.
 
