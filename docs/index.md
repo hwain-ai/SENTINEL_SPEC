@@ -17,8 +17,8 @@ SENTINEL_SPEC의 사용법과 변경 이유를 찾는 문서 시작점입니다.
 
 ## 도구 선택 근거
 
-* [외부 mutation 도구 후보 평가](mutation-backend-evaluation.md) - 개발자 공개 경험, PIT·Go 도구 실제 실행, Stryker 유지와 plugin 경계
-* [외부 adapter 구현 진행](external-adapter-progress.md) - Go 반복 대조·Java 후보별 정상 대조와 변이 재실행, 남은 운영 조건
+* [외부 mutation 도구 후보 평가](mutation-backend-evaluation.md) - 개발자 공개 경험, PIT 실제 실행, Stryker 유지와 plugin 경계
+* [외부 adapter 구현 진행](external-adapter-progress.md) - Java 후보별 정상 대조와 변이 재실행, 남은 운영 조건
 
 ## 운영 기록
 

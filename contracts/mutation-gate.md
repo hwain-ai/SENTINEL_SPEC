@@ -34,7 +34,7 @@ Mutant는 mutation 도구가 결함을 흉내 내기 위해 원본 코드를 한
 
 ## 판정 순서
 
-1. 9개 상태 count, inScope, unauthorizedExclusion이 bool이 아닌 0 이상 9,007,199,254,740,991 이하의 정수인지 확인합니다. 이 범위는 JSON을 사용하는 다섯 언어가 같은 정수를 손실 없이 읽기 위한 공통 한계입니다.
+1. 9개 상태 count, inScope, unauthorizedExclusion이 bool이 아닌 0 이상 9,007,199,254,740,991 이하의 정수인지 확인합니다. 이 범위는 JSON을 사용하는 세 언어가 같은 정수를 손실 없이 읽기 위한 공통 한계입니다.
 2. 9개 상태 count의 합이 inScope와 정확히 같은지 확인합니다.
 3. inScope가 0이면 통과시키지 않고 kill rate도 만들지 않습니다.
 4. inScope가 1 이상이고 unauthorizedExclusion이 0이며 `killed × 100 × minimum.denominator ≥ minimum.numerator × inScope`일 때만 통과합니다. minimum은 검사 요청이 넘기는 최소 kill 비율(퍼센트)이며 기본값은 100입니다.
