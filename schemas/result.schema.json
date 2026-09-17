@@ -114,30 +114,6 @@
               "inScope": {
                 "minimum": 1
               },
-              "survived": {
-                "const": 0
-              },
-              "uncovered": {
-                "const": 0
-              },
-              "timedOut": {
-                "const": 0
-              },
-              "compileError": {
-                "const": 0
-              },
-              "runtimeError": {
-                "const": 0
-              },
-              "pending": {
-                "const": 0
-              },
-              "ignored": {
-                "const": 0
-              },
-              "toolError": {
-                "const": 0
-              },
               "unauthorizedExclusion": {
                 "const": 0
               }

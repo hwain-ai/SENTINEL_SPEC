@@ -8,9 +8,9 @@ sources:
     title: Mutation killed-only gate golden vector
 ---
 
-# Mutation killed-only gate 계약
+# Mutation 최소 kill 비율 계약
 
-한마디로, 검사 범위에 mutant가 하나 이상 있고 모든 mutant가 테스트에 의해 killed된 경우만 통과합니다.
+검사 범위에 mutant가 하나 이상 있고 승인받지 않은 제외가 없으며, 테스트가 탐지한 비율이 최소 기준값(기본 90%) 이상이면 통과합니다.
 
 Mutant는 mutation 도구가 결함을 흉내 내기 위해 원본 코드를 한 군데 바꾼 실행 후보입니다. killed는 기존 테스트가 그 변경을 감지해 실패했다는 뜻입니다.
 
@@ -37,10 +37,12 @@ Mutant는 mutation 도구가 결함을 흉내 내기 위해 원본 코드를 한
 1. 9개 상태 count, inScope, unauthorizedExclusion이 bool이 아닌 0 이상 9,007,199,254,740,991 이하의 정수인지 확인합니다. 이 범위는 JSON을 사용하는 세 언어가 같은 정수를 손실 없이 읽기 위한 공통 한계입니다.
 2. 9개 상태 count의 합이 inScope와 정확히 같은지 확인합니다.
 3. inScope가 0이면 통과시키지 않고 kill rate도 만들지 않습니다.
-4. inScope가 1 이상이고 unauthorizedExclusion이 0이며 `killed × 100 × minimum.denominator ≥ minimum.numerator × inScope`일 때만 통과합니다. minimum은 검사 요청이 넘기는 최소 kill 비율(퍼센트)이며 기본값은 100입니다.
+4. inScope가 1 이상이고 unauthorizedExclusion이 0이며 `killed × 100 × minimum.denominator ≥ minimum.numerator × inScope`일 때만 통과합니다. minimum은 검사 요청이 넘기는 최소 kill 비율(퍼센트)이며 기본값은 90입니다.
 5. inScope가 1 이상이면 kill rate를 `killed / inScope` 기약분수로 계산합니다.
 
-기본값 100에서는 killed가 inScope와 같아야 하므로 나머지 8개 상태는 모두 0이어야 합니다. 따라서 timeout-only, ignored-only, survived가 하나라도 있는 결과와 승인받지 않은 제외가 있는 결과는 모두 실패합니다. zero-mutant 결과를 100%로 꾸미지 않습니다.
+기본값 90에서는 정확한 kill 비율이 90% 이상이면 통과합니다. 예를 들어 10개 중 9개 killed와 1개 survived는 통과하고, 100개 중 89개 killed는 실패합니다. 명시적으로 100을 지정하면 killed가 inScope와 같아야 하므로 나머지 8개 상태는 모두 0이어야 합니다. 승인받지 않은 제외나 inScope 0은 기준값에 관계없이 실패하며, zero-mutant 결과를 100%로 꾸미지 않습니다.
+
+`result.schema.json`은 결과의 구조와 통과 시 inScope·unauthorizedExclusion 조건을 검증합니다. 상태 합계와 요청 기준값에 따른 정확한 비율 판정은 참조 구현으로 검증해야 합니다. 통과 결과에서 killed 외 상태를 무조건 0으로 제한하지 않습니다. 증거 파일은 판정에 사용한 mutationMin을 기록합니다.
 
 ## 최소 kill 비율 형식
 

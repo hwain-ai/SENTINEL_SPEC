@@ -26,10 +26,10 @@ def counts(**overrides):
 
 
 class ThresholdParsingTests(unittest.TestCase):
-    def test_defaults_are_the_killed_only_and_crap_eight_gates(self):
-        self.assertEqual(("8", "100"), (DEFAULT_CRAP_MAX, DEFAULT_MUTATION_MIN))
+    def test_defaults_are_ninety_percent_and_crap_eight(self):
+        self.assertEqual(("8", "90"), (DEFAULT_CRAP_MAX, DEFAULT_MUTATION_MIN))
         self.assertEqual(Fraction(8), parse_crap_max(DEFAULT_CRAP_MAX))
-        self.assertEqual(Fraction(100), parse_mutation_min(DEFAULT_MUTATION_MIN))
+        self.assertEqual(Fraction(90), parse_mutation_min(DEFAULT_MUTATION_MIN))
 
     def test_decimal_text_is_read_exactly_without_binary_float(self):
         self.assertEqual(Fraction(17, 2), parse_threshold("8.5", "crapMax"))

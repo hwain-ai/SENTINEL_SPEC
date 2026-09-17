@@ -69,8 +69,8 @@ def evaluate_mutation(
 ):
     """Validate all counts and return the minimum-kill-rate gate result.
 
-    The default minimum of 100 percent is the killed-only gate: every in-scope
-    mutant must be killed, so no other state can remain.
+    The default minimum is 90 percent. An explicit 100 percent requires every
+    in-scope mutant to be killed, so no other state can remain.
     """
 
     minimum = parse_mutation_min(mutation_min)

@@ -312,6 +312,22 @@ class ResultSchemaTests(unittest.TestCase):
         self.assertEqual(count_schema["minimum"], 0)
         self.assertEqual(count_schema["maximum"], 9_007_199_254_740_991)
 
+    def test_schema_pass_constraints_allow_the_reference_threshold_results(self):
+        constraints = self.schema["properties"]["mutation"]["allOf"][0]["then"]["properties"]
+        for case in load_json("golden/gate/threshold-v1.json")["mutationCases"]:
+            result = evaluate_mutation(case["counts"], case["inScope"],
+                                       case["unauthorizedExclusion"], case["mutationMin"])
+            if not result.passed:
+                continue
+            counts = dict(case["counts"], inScope=result.in_scope,
+                          unauthorizedExclusion=result.unauthorized_exclusion)
+            for field, rule in constraints.items():
+                with self.subTest(case=case["id"], field=field):
+                    if "const" in rule:
+                        self.assertEqual(rule["const"], counts[field])
+                    if "minimum" in rule:
+                        self.assertGreaterEqual(counts[field], rule["minimum"])
+
     def test_schema_uses_canonical_fraction_strings(self):
         self.assertEqual(
             self.schema["$defs"]["nonnegativeDecimalString"]["pattern"],

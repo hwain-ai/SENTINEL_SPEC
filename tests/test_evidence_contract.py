@@ -414,6 +414,18 @@ class EvidenceFileContractTests(unittest.TestCase):
                 with self.assertRaisesRegex(EvidenceContractError, case["error"]):
                     build_evidence_file(body, self.project_state)
 
+    def test_ninety_percent_pass_round_trips_with_its_recorded_threshold(self):
+        body = copy.deepcopy(self.vectors["validCases"][0]["body"])
+        body["components"]["mutation"].update(
+            {"inScope": 10, "killed": 9, "survived": 1, "mutationMin": "90", "pass": True}
+        )
+        payload = build_evidence_file(body, self.project_state)
+        document = validate_evidence_file(payload, self.project_state)
+        self.assertEqual(body["components"]["mutation"], document["components"]["mutation"])
+        body["components"]["mutation"]["mutationMin"] = "100"
+        with self.assertRaises(EvidenceContractError):
+            build_evidence_file(body, self.project_state)
+
     def test_invalid_wire_files_have_stable_errors(self):
         valid_by_id = {case["id"]: case for case in self.vectors["validCases"]}
         for case in self.vectors["wireInvalidCases"]:

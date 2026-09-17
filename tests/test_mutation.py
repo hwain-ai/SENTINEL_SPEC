@@ -47,6 +47,11 @@ class MutationGateTests(unittest.TestCase):
         self.assertFalse(result.passed)
         self.assertEqual(result.kill_rate, Fraction(1, 2))
 
+    def test_default_accepts_ninety_percent_but_not_eighty_nine_point_nine_nine(self):
+        self.assertTrue(evaluate_mutation(counts(killed=9, survived=1), 10).passed)
+        self.assertFalse(evaluate_mutation(counts(killed=8999, survived=1001), 10000).passed)
+        self.assertFalse(evaluate_mutation(counts(killed=9, survived=1), 10, mutation_min="100").passed)
+
     def test_zero_mutants_fails_without_fabricated_kill_rate(self):
         result = evaluate_mutation(counts(), in_scope=0)
         self.assertFalse(result.passed)

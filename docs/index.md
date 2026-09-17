@@ -9,7 +9,7 @@ SENTINEL_SPEC의 사용법과 변경 이유를 찾는 문서 시작점입니다.
 ## 실행 가능한 계약
 
 * [CRAP 수치 계약](../contracts/crap.md) - exact fraction 계산, CRAP 상한(기본 8) gate와 표준 소수 규칙
-* [Mutation gate](../contracts/mutation-gate.md) - 9개 상태 합계와 최소 kill 비율(기본 100%) 판정 규칙
+* [Mutation gate](../contracts/mutation-gate.md) - 9개 상태 합계와 최소 kill 비율(기본 90%) 판정 규칙
 * [CRAP golden vector](../golden/crap/formula-v1.json) - 언어별 CRAP 구현이 재현할 입력과 기대값
 * [CRAP 정렬 golden vector](../golden/crap/stable-sort-v1.json) - 위험도·UTF-8 byte·source byte 위치의 공통 정렬 규칙
 * [Mutation golden vector](../golden/gate/mutation-v1.json) - 언어별 mutation gate가 재현할 입력과 기대값

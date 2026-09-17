@@ -1,5 +1,10 @@
 # 변경 기록
 
+## 2026-09-17
+
+- **Update** 최소 kill 비율 기본값을 90%로 변경하고 CRAP 상한 8을 유지. 90% 경계·89.99% 실패·명시적 100% 기준의 golden을 추가했다.
+- **Fix** result.schema.json의 통과 결과에서 killed 외 상태를 무조건 0으로 요구하던 조건을 제거해 기존 가변 기준값 계약과 일치시켰다. 상태 합계·정확한 비율 판정은 참조 구현이 검증하며, inScope 0·승인 없는 제외의 통과는 계속 거부한다.
+
 ## 2026-09-13
 
 - **Update** evidence.schema.json·evidence_contract.py·evidence-v1.json: crap 구성요소에 crapMax, mutation 구성요소에 mutationMin 문자열을 필수로 추가. 증거 파일이 자기 판정에 쓴 기준값을 담아야 의미 검사가 기준값과 무관하게 재계산된다. 세 정상 사례의 body·HMAC·파일 지문은 참조 구현으로 다시 계산했다. 이 항목이 없는 이전 증거 파일은 더 이상 유효하지 않다.

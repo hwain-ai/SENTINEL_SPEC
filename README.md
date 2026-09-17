@@ -4,12 +4,12 @@
 
 SENTINEL_SPEC의 단일 책임은 언어별 SENTINEL 구현이 공유할 결과 형식, 품질 정책, 적합성 예제를 정의하는 것입니다.
 
-현재 버전은 CRAP exact fraction 계산, 표준 소수 표시, mutation 9개 상태 검증과 기준값 gate를 실행 가능한 Python reference implementation으로 제공합니다. 기준값은 CRAP 상한(기본 8)과 최소 kill 비율(기본 100%)이며, 검사 요청이 소수점 두 자리까지의 문자열로 넘깁니다.
+현재 버전은 CRAP exact fraction 계산, 표준 소수 표시, mutation 9개 상태 검증과 기준값 gate를 실행 가능한 Python reference implementation으로 제공합니다. 기준값은 CRAP 상한(기본 8)과 최소 kill 비율(기본 90%)이며, 검사 요청이 소수점 두 자리까지의 문자열로 넘깁니다.
 
 ## 현재 제공 범위
 
 * [CRAP 수치 계약](contracts/crap.md): CRAP 상한(기본 8) 이하 판정과 최대 12자리 round-half-to-even 표시
-* [Mutation gate 계약](contracts/mutation-gate.md): kill 비율이 최소값(기본 100%, 즉 모든 in-scope mutant killed) 이상일 때만 통과
+* [Mutation gate 계약](contracts/mutation-gate.md): kill 비율이 최소값(기본 90%) 이상일 때만 통과
 * [결과 JSON Schema](schemas/result.schema.json): 언어별 결과의 공통 구조와 안전한 정수 범위
 * `golden/`: 다른 언어가 같은 결과를 내는지 확인하는 공통 입력과 기대값
 
