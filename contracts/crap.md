@@ -1,18 +1,6 @@
----
-type: Executable Contract
-status: draft
-generated: { by: "process:codex", at: "2026-09-03T09:45:52Z" }
-owner: "human:hwain"
-sources:
-  - resource: ../golden/crap/formula-v1.json
-    title: CRAP 수식과 표준 소수 golden vector
-  - resource: ../golden/crap/stable-sort-v1.json
-    title: CRAP 결과의 안정적인 정렬 golden vector
----
-
 # CRAP 수치 계약
 
-한마디로, 모든 SENTINEL 구현은 부동소수점 오차 없이 같은 CRAP 값과 같은 통과 여부를 만들어야 합니다.
+모든 SENTINEL 구현은 부동소수점 오차 없이 같은 CRAP 값과 같은 통과 여부를 만들어야 합니다.
 
 ## 입력
 

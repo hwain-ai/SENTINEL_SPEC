@@ -1,28 +1,25 @@
 # SENTINEL_SPEC
 
-## 역할
+SENTINEL 언어 검사기가 공유하는 CRAP 계산, mutation 판정, 결과 형식과 검증 예제입니다.
 
-SENTINEL_SPEC의 단일 책임은 언어별 SENTINEL 구현이 공유할 결과 형식, 품질 정책, 적합성 예제를 정의하는 것입니다.
+## 계약과 결과 읽기
 
-현재 버전은 CRAP exact fraction 계산, 표준 소수 표시, mutation 9개 상태 검증과 기준값 gate를 실행 가능한 Python reference implementation으로 제공합니다. 기준값은 CRAP 상한(기본 8)과 최소 kill 비율(기본 90%)이며, 검사 요청이 소수점 두 자리까지의 문자열로 넘깁니다.
+| 문서 | 내용 |
+|---|---|
+| [CRAP 수치 계약](contracts/crap.md) | 정확한 분수 계산, 기준값, 소수 표시와 정렬 |
+| [Mutation 판정 계약](contracts/mutation-gate.md) | 변이 상태, `killed / inScope` 비율과 통과 조건 |
+| [선택 검사와 결과](contracts/agent-check.md) | 파일·함수·테스트 선택, 점수·위치, `pass`와 `certified` 해석 |
+| [문서 목록](docs/index.md) | 계약·스키마·개발 안내 |
 
-## 현재 제공 범위
+`schemas/`는 결과·증거·진단 JSON의 구조를 정의합니다. `golden/`은 언어별 구현에서 같은 결과가 나와야 하는 입력과 기대값입니다. 테스트 실행과 언어별 도구 설치는 [SENTINEL](https://github.com/hwain-ai/SENTINEL)이 담당합니다.
 
-* [CRAP 수치 계약](contracts/crap.md): CRAP 상한(기본 8) 이하 판정과 최대 12자리 round-half-to-even 표시
-* [Mutation gate 계약](contracts/mutation-gate.md): kill 비율이 최소값(기본 90%) 이상일 때만 통과
-* [결과 JSON Schema](schemas/result.schema.json): 언어별 결과의 공통 구조와 안전한 정수 범위
-* `golden/`: 다른 언어가 같은 결과를 내는지 확인하는 공통 입력과 기대값
+## Python 패키지와 검증
 
-CLI, history, mutation backend 실행, 언어별 toolchain 설치는 이 단계의 범위가 아닙니다.
+`sentinel-spec`은 Python 3.9 이상에서 동작하며 실행 시 표준 라이브러리만 사용합니다. 주요 공개 함수는 `calculate_crap`, `crap_gate_passes`, `render_canonical_decimal`, `evaluate_mutation`, `parse_crap_max`, `parse_mutation_min`입니다.
 
-## Python package
+저장소 루트에서 공통 계약과 예제를 검사합니다.
 
-package 이름은 sentinel-spec이고 Python 3.9 이상에서 설치할 수 있습니다. 실행 코드는 Python standard library만 사용하며 runtime dependency는 없습니다. 공개 함수는 `calculate_crap`, `crap_gate_passes`, `render_canonical_decimal`, `evaluate_mutation`과 기준값 문자열을 정확한 분수로 읽는 `parse_crap_max`, `parse_mutation_min`입니다.
-
-repository의 계약 검증은 다음 명령으로 실행합니다: `/usr/bin/python3 -m unittest discover -s tests -v`.
-
-원격 저장소는 github.com/hwain-ai/SENTINEL_SPEC 입니다.
-
-## 설계 근거
-
-원본 작업공간 설계 문서: [2026-08-native-quality-tools.md](https://github.com/hwain-ai/SENTINEL/blob/main/docs/design-docs/2026-08-native-quality-tools.md) (SENTINEL 저장소)
+```sh
+# -B: 바이트코드 파일 생성 금지, discover: tests 폴더의 시험 탐색
+python3 -B -m unittest discover -s tests -v
+```

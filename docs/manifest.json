@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "documents": [
+    {
+      "path": "README.md",
+      "summary": "공통 계산 계약, 스키마, 테스트 실행 방법"
+    },
+    {
+      "path": "contracts/crap.md",
+      "summary": "함수별 CRAP 계산과 커버리지·행 정렬 계약"
+    },
+    {
+      "path": "contracts/mutation-gate.md",
+      "summary": "변이 상태, 분모와 탐지율의 통과 기준"
+    },
+    {
+      "path": "contracts/agent-check.md",
+      "summary": "파일·함수·테스트 선택과 진단 결과의 필드 의미"
+    },
+    {
+      "path": "docs/contributing.md",
+      "summary": "문서 색인·소스 연결표 관리, diff 검사와 push 훅 사용"
+    }
+  ],
+  "rules": [
+    {
+      "id": "crap",
+      "sources": [
+        "src/sentinel_spec/crap*.py",
+        "golden/crap/**"
+      ],
+      "documents": [
+        "contracts/crap.md"
+      ]
+    },
+    {
+      "id": "mutation",
+      "sources": [
+        "src/sentinel_spec/mutation.py",
+        "golden/mutation/**"
+      ],
+      "documents": [
+        "contracts/mutation-gate.md"
+      ]
+    },
+    {
+      "id": "diagnostics",
+      "sources": [
+        "schemas/diagnostics.schema.json"
+      ],
+      "documents": [
+        "contracts/agent-check.md"
+      ]
+    },
+    {
+      "id": "contracts",
+      "sources": [
+        "schemas/**",
+        "src/**",
+        "golden/**",
+        "pyproject.toml",
+        "toolchain.lock.json"
+      ],
+      "documents": [
+        "README.md",
+        "contracts/crap.md",
+        "contracts/mutation-gate.md",
+        "contracts/agent-check.md"
+      ]
+    },
+    {
+      "id": "documentation-checks",
+      "sources": [
+        "scripts/docs_lint.py",
+        "scripts/verify_repository.sh",
+        ".githooks/**",
+        ".github/workflows/**",
+        "docs/manifest.json",
+        "tests/test_docs_lint.py"
+      ],
+      "documents": [
+        "docs/contributing.md"
+      ]
+    }
+  ],
+  "ignoreDocuments": []
+}

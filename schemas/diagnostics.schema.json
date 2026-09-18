@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentinel.invalid/schemas/diagnostics.schema.json",
+  "title": "SENTINEL local agent diagnostics v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "scope", "crap", "mutation"],
+  "properties": {
+    "schemaVersion": {"const": "sentinel-diagnostics-v1"},
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["files", "functions", "tests"],
+      "properties": {
+        "files": {"$ref": "#/$defs/strings"},
+        "functions": {"$ref": "#/$defs/strings"},
+        "tests": {"$ref": "#/$defs/strings"},
+        "testSelection": {"enum": ["explicit", "configured", "maven"]}
+      }
+    },
+    "crap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["limit", "maxScore", "pass", "functions", "files"],
+      "properties": {
+        "limit": {"$ref": "#/$defs/decimal"},
+        "maxScore": {"$ref": "#/$defs/score"},
+        "pass": {"type": "boolean"},
+        "functions": {"type": "array", "items": {"type": "object", "required": ["id", "score"], "properties": {"score": {"$ref": "#/$defs/score"}}}},
+        "files": {"type": "array", "items": {"type": "object", "required": ["file", "functionCount", "maxScore", "unknownCount"]}}
+      }
+    },
+    "mutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum", "score", "inScope", "counts", "pass", "mutants", "files", "functions"],
+      "properties": {
+        "minimum": {"$ref": "#/$defs/decimal"},
+        "score": {"$ref": "#/$defs/score"},
+        "inScope": {"type": "integer", "minimum": 0},
+        "counts": {"$ref": "#/$defs/counts"},
+        "pass": {"type": "boolean"},
+        "mutants": {"type": "array", "items": {"type": "object", "required": ["id", "status"], "properties": {"id": {"type": "string"}, "status": {"$ref": "#/$defs/state"}}}},
+        "files": {"type": "array", "items": {"$ref": "#/$defs/mutationGroup"}},
+        "functions": {"type": "array", "items": {"$ref": "#/$defs/mutationGroup"}}
+      }
+    }
+  },
+  "$defs": {
+    "strings": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "decimal": {"type": "string", "pattern": "^(0|[1-9][0-9]*)(\\.[0-9]+)?$"},
+    "score": {"anyOf": [{"$ref": "#/$defs/decimal"}, {"type": "null"}]},
+    "state": {"enum": ["killed", "survived", "uncovered", "timedOut", "compileError", "runtimeError", "pending", "ignored", "toolError"]},
+    "counts": {
+      "type": "object",
+      "required": ["killed", "survived", "uncovered", "timedOut", "compileError", "runtimeError", "pending", "ignored", "toolError"],
+      "propertyNames": {"$ref": "#/$defs/state"},
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "mutationGroup": {
+      "type": "object",
+      "required": ["file", "inScope", "killed", "score", "pass", "counts"],
+      "properties": {
+        "score": {"$ref": "#/$defs/score"},
+        "pass": {"type": ["boolean", "null"]},
+        "counts": {"$ref": "#/$defs/counts"}
+      }
+    }
+  }
+}

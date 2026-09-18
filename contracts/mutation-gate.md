@@ -1,18 +1,10 @@
----
-type: Executable Contract
-status: draft
-generated: { by: "process:codex", at: "2026-09-03T09:45:52Z" }
-owner: "human:hwain"
-sources:
-  - resource: ../golden/gate/mutation-v1.json
-    title: Mutation killed-only gate golden vector
----
-
 # Mutation 최소 kill 비율 계약
 
 검사 범위에 mutant가 하나 이상 있고 승인받지 않은 제외가 없으며, 테스트가 탐지한 비율이 최소 기준값(기본 90%) 이상이면 통과합니다.
 
 Mutant는 mutation 도구가 결함을 흉내 내기 위해 원본 코드를 한 군데 바꾼 실행 후보입니다. killed는 기존 테스트가 그 변경을 감지해 실패했다는 뜻입니다.
+
+`inScope`는 점수 계산에 포함한 변이 수입니다. 테스트 파일이나 테스트 함수 수가 아닙니다. 예를 들어 `killed: 2`, `inScope: 2`이면 변이 두 개를 모두 탐지해 점수가 100%입니다. 함수·파일·명령 전체의 `pass` 차이는 [선택 검사와 결과](agent-check.md#inscope와-통과-표시-읽기)를 참고합니다.
 
 ## 허용 상태
 
