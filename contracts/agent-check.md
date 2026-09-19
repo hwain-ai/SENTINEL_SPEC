@@ -32,15 +32,15 @@ tool-protocol-v1의 선택적 request field `selection`은 `files`, `functions`,
 - `mutation.files`, `mutation.functions`: 같은 위치로 묶은 탐지 개수/전체 개수와 비율. 함수를 식별할 수 없는 변이는 파일 집계에 남긴다.
 - 변이가 없는 세부 그룹은 `score: null`, `pass: null`, `reason: zeroMutants`다. 전체 변이가 0개면 전체 gate는 실패하며 100%로 표시하지 않는다.
 
-수치는 기존 정확한 분수 계산으로 판정하고 표시값은 문자열로 제공한다. `noChanges`는 미검사다. 특정 파일·함수·테스트, 변경분 또는 일부 모듈의 통과는 `certified: false`이며 전체 인증으로 보고하지 않는다.
+수치는 기존 정확한 분수 계산으로 판정하고 표시값은 문자열로 제공한다. `noChanges`는 미검사다. 파일·함수·테스트·변경분 또는 일부 모듈·언어를 선택하면 `selection: partial`, 별도 선택 없는 전체 설정 범위는 `allConfigured`다. 변경분이 모든 모듈에 있더라도 `--changed`는 `partial`이다.
 
 SENTINEL은 측정 사실을 반환한다. 테스트 설계, 요구사항과의 일치 여부, 수정 방향은 이를 호출한 에이전트가 판단한다.
 
-## inScope와 통과 표시 읽기
+## inScope와 명령·품질 결과 읽기
 
 예를 들어 `killed: 2`, `inScope: 2`, `score: "100"`이면 판정 대상 변이 두 개를 테스트가 모두 탐지했다는 뜻이다. 점수는 `killed / inScope × 100`이며, 변이가 없으면 100%로 계산하지 않는다.
 
-`pass`는 놓인 위치에 따라 판단 범위가 다르다.
+`results[].details` 안의 `pass`는 품질 기준 충족 여부다. 명령의 성공 여부를 중복 표시하는 최상위 불리언은 없다.
 
 | 위치 | 판단 대상 |
 |---|---|
@@ -48,14 +48,16 @@ SENTINEL은 측정 사실을 반환한다. 테스트 설계, 요구사항과의 
 | `details.mutation.files[].pass` | 해당 파일의 mutation 점수가 기준을 충족했는가 |
 | `details.mutation.pass` | 검사 범위 전체의 mutation 결과가 기준을 충족했는가 |
 | `details.crap.pass` | 검사 범위의 함수별 CRAP 결과가 기준을 충족했는가 |
-| 명령 결과 최상위 `pass` | 명령의 최종 `exitCode`가 0인가 |
+| 최상위 `exitCode` | 명령 종료 코드. 0이어도 noChanges는 미검사 |
 
-최상위 `pass`는 검사기가 정상 작동했는지를 나타내는 별도 진단 값이 아니다. 품질 미달, 잘못된 입력, 실행 오류, 취소와 미승인 실행은 모두 명령 실패가 될 수 있다. 에이전트는 `results[].status`와 제공된 `diagnostic`을 함께 읽는다.
+`exitCode`는 명령의 종료 코드다. 품질 미달·입력 오류·실행 오류·취소·실험 실행은 0이 아닌 코드로 끝날 수 있다. 품질 판정은 `results[].status`, 실제 범위는 `selection`과 `details.scope`로 읽고, 제공된 `diagnostic`으로 실행 오류를 확인한다.
 
 - `qualityFailed`: 점수나 필수 측정 조건이 품질 기준을 충족하지 못했다. 이 상태만으로 검사기 고장을 뜻하지는 않는다.
-- `noChanges`: 검사할 기능 코드 변경이 없어 실행을 건너뛰었다. 종료 0과 `pass: true`여도 테스트를 실행해 통과한 결과는 아니다.
+- `noChanges`: 검사할 기능 코드 변경이 없어 실행을 건너뛰었다. 종료 0이어도 실제 검사를 통과한 결과는 아니다.
 - `backendError` 등 실행 실패 상태: 검사 실행이나 결과 수집에 문제가 있다. 정상적으로 얻은 점수와 제공되지 않은 측정값을 구분한다.
 
-`certified`는 전체 설정 범위를 승인된 도구로 모두 검사해 통과했는지를 별도로 표시한다. 파일·함수·테스트 선택, 변경분 검사, 일부 모듈 검사와 `noChanges`는 전체 인증이 아니다. `--experimental` 실행은 세부 점수가 통과해도 최상위 종료 6, `pass: false`, `certified: false`를 반환한다.
+설정된 전체 범위의 통과가 필요한 호출자는 `selection: allConfigured`와 모든 `results[].status: passed`를 함께 확인한다. 기본 검사에서는 `admitted`로 도구 승인 여부도 확인한다. `--experimental`은 세부 검사를 통과해도 최상위 종료 6을 반환한다.
+
+통합 CLI 0.2.0의 출력은 `sentinel-workspace-result-v2`와 `sentinel-setup-result-v2`다. v1에서 사용한 최상위 `pass`와 `certified`는 제거했으며 대체 성공 불리언을 추가하지 않는다. 언어 어댑터의 `passed`, 진단 결과의 CRAP·mutation `pass`, 공통 gate/evidence 스키마는 변경하지 않는다.
 
 최상위 판정 구현은 [SENTINEL cli.py](https://github.com/hwain-ai/SENTINEL/blob/main/src/sentinel/cli.py), 통합 출력 예시는 [결과 해석](https://github.com/hwain-ai/SENTINEL/blob/main/docs/results.md)에 있다.
